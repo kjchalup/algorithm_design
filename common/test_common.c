@@ -31,6 +31,7 @@ double test_vector()
   vector *sum = addv(v1, v2);
   double dot = dotv(v1, v2);
   vector *sm = scalar_multv(v1, -1);
+  double dist = distv(v1, v2);
   
   if (v1->coords[0] == .1 &&
       v1->coords[1] == .2 &&
@@ -57,9 +58,14 @@ double test_vector()
     success += 1.;
     printf("4 ");
   }
-  printf("\n");
+  
+  if (dist > 18.748 && dist < 18.75){
+    success += 1.;
+    printf("5 ");
+  }
 
-  return success / 4.;
+  printf("\n");
+  return success / 5.;
 }
   
     

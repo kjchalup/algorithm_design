@@ -4,7 +4,7 @@
  */
 
 /*
- * Geometry headers.
+ * Vector headers.
  */
 typedef struct vector {
   double *coords;
@@ -15,5 +15,12 @@ vector *init_v(double *, int);
 vector *addv(vector *, vector *);
 vector *scalar_multv(vector *, double);
 double dotv(vector *, vector *);
+double distv(vector *, vector *);
+
+/*
+ * Functional programming headers.
+ */
+double reduce(double *, double (*)(double, double), int);
+double reduce_add(double, double);
 
     

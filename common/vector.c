@@ -3,10 +3,15 @@
  * Krzysztof Chalupka, 2017.
  */
 #include <stdlib.h>
+#include <math.h>
 #include "common.h"
 
 vector *_coordwise(vector *, vector *, double,
 		   double (*)(double, double, double));
+double _add(double, double, double);
+double _mult(double, double, double);
+double _scale(double, double, double);
+double _pow(double, double, double);
 
 vector *init_v(double coords[], int dim)
 {
@@ -15,19 +20,6 @@ vector *init_v(double coords[], int dim)
   v->dim = dim;
   v->coords = coords;
   return v;
-}
-
-
-double _add(double x, double y, double dummy){
-  return x + y;
-}
-
-double _mult(double x, double y, double dummy){
-  return x * y;
-}
-
-double _scale(double x, double dummy, double c){
-  return c * x;
 }
 
 vector *addv(vector *v1, vector *v2)
@@ -48,10 +40,23 @@ double dotv(vector *v1, vector *v2)
   int i;
   double sum = 0.;
   vector *v = _coordwise(v1, v2, 0, _mult);
-  for (i = 0; i < v->dim; i++){
-    sum += v->coords[i];
-  }
-  return sum;
+  return reduce(v->coords, reduce_add, v->dim);
+}
+
+double distv(vector *v1, vector *v2)
+{
+  /* Compute the Euclidean distance. */
+  double dist;
+  vector *negv2 = scalar_multv(v2, -1);
+  vector *diff = addv(v1, negv2);
+  vector *squared = _coordwise(diff, diff, 2, _pow);
+
+  dist = sqrt(reduce(squared->coords, reduce_add, squared->dim));
+
+  free(negv2);
+  free(diff);
+  free(squared);
+  return dist;
 }
 
 vector *_coordwise(vector *v1, vector *v2,
@@ -67,3 +72,19 @@ vector *_coordwise(vector *v1, vector *v2,
     v->coords[i] = fun(v1->coords[i], v2->coords[i], c);
   return v;
 }
+
+double _add(double x, double y, double dummy){
+  return x + y;
+}
+
+double _mult(double x, double y, double dummy){
+  return x * y;
+}
+
+double _scale(double x, double dummy, double c){
+  return c * x;
+}
+
+ double _pow(double x, double y, double c){
+   return pow(x, c);
+ }
