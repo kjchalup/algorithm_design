@@ -17,19 +17,6 @@ vector *init_v(double coords[], int dim)
   return v;
 }
 
-vector *_coordwise(vector *v1, vector *v2,
-		   double c, double (*fun)(double, double, double)){
-  /* Create a new vector v, and apply function fun
-     coordinate-wise to v1, v2, c, storing the result in v.
-  */
-  int i;
-  vector *v = (vector *) malloc(sizeof(vector));
-  v->dim = v1->dim;
-  v->coords = (double *) calloc(v->dim, sizeof(double));
-  for (i = 0; i < v->dim; i++)
-    v->coords[i] = fun(v1->coords[i], v2->coords[i], c);
-  return v;
-}
 
 double _add(double x, double y, double dummy){
   return x + y;
@@ -65,4 +52,18 @@ double dotv(vector *v1, vector *v2)
     sum += v->coords[i];
   }
   return sum;
+}
+
+vector *_coordwise(vector *v1, vector *v2,
+		   double c, double (*fun)(double, double, double)){
+  /* Create a new vector v, and apply function fun
+     coordinate-wise to v1, v2, c, storing the result in v.
+  */
+  int i;
+  vector *v = (vector *) malloc(sizeof(vector));
+  v->dim = v1->dim;
+  v->coords = (double *) calloc(v->dim, sizeof(double));
+  for (i = 0; i < v->dim; i++)
+    v->coords[i] = fun(v1->coords[i], v2->coords[i], c);
+  return v;
 }

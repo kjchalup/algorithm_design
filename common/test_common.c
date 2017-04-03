@@ -33,22 +33,31 @@ double test_vector()
   vector *sm = scalar_multv(v1, -1);
   
   if (v1->coords[0] == .1 &&
-      v2->coords[1] == .2 &&
-      v3->coords[2] == .3)
+      v1->coords[1] == .2 &&
+      v1->coords[2] == .3){
     success += 1.;
+    printf("1 ");
+  }
 
   if (sum->coords[0] == 10.1 &&
       sum->coords[1] == 11.2 &&
-      sum->coords[2] == 12.3)
+      sum->coords[2] == 12.3){
     success += 1.;
+    printf("2 ");
+  }
 
-  if (dot == 10.1 + 11.2 + 12.3)
+  if (dot == (10 * .1 + 11 * .2 + 12 * .3)){
     success += 1.;
+    printf("3 ");
+  }
   
-  if (sm->coords[0] == 1. &&
-      sm->coords[1] == 2. &&
-      sm->coords[2] == 3.)
+  if (sm->coords[0] == -.1 &&
+      sm->coords[1] == -.2 &&
+      sm->coords[2] == -.3){
     success += 1.;
+    printf("4 ");
+  }
+  printf("\n");
 
   return success / 4.;
 }
