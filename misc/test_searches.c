@@ -15,7 +15,7 @@ int main()
   float linear_success;
   float binary_success;
   
-  /* Run the linear search tests. */
+  /* Run the tests. */
   linear_success = test_linear_search();
   binary_success = test_binary_search();
   

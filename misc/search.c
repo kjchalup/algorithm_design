@@ -12,7 +12,7 @@ int linear_search_arr(void *arr[], void *findme, comp_fn comp, int n)
   /* Find element `findme` in array `arr` of length at most `n`.
      Return the index of the element or -1.
   */
-  int i;
+  int i = 0;
   for (i = 0; i < n; i++){
     if(!comp(arr[i], findme)){
       return i;
@@ -21,7 +21,7 @@ int linear_search_arr(void *arr[], void *findme, comp_fn comp, int n)
   return -1;
 }
 
-int binary_search_arr(void *arr[], void *findme,\
+int binary_search_arr(void *arr[], void *findme,
 		      comp_fn comp, int left, int right)
 {
   /* Find element `findme` in array `arr` of length at most `n`.
@@ -41,5 +41,3 @@ int binary_search_arr(void *arr[], void *findme,\
   else
     return mid;
 }
-  
-  
