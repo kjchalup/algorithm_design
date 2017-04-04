@@ -20,17 +20,17 @@ dlist_node *dlist_search(dlist *list, void *item, comp_fn comp){
 }
 
 
-void dlist_delete(dlist **list, dlist_node *node){
-  if((*list)->head == node && (*list)->tail == node){
-    (*list)->head = (*list)->tail = NULL;
+void dlist_delete(dlist *list, dlist_node *node){
+  if(list->head == node && list->tail == node){
+    list->head = list->tail = NULL;
   } 
-  else if((*list)->head == node){
-    (*list)->head = node->next;
-    (*list)->head->prev = NULL;
+  else if(list->head == node){
+    list->head = node->next;
+    list->head->prev = NULL;
   }
-  else if((*list)->tail == node){
-    (*list)->tail = node->prev;
-    (*list)->tail->next = NULL;
+  else if(list->tail == node){
+    list->tail = node->prev;
+    list->tail->next = NULL;
   }
   else if(node){
     node->prev->next = node->next;
@@ -41,20 +41,20 @@ void dlist_delete(dlist **list, dlist_node *node){
 }
   
 
-void dlist_insert(dlist **list, void *item){
+void dlist_insert(dlist *list, void *item){
   /* Insert at the head of the list. */
   dlist_node *newnode = (dlist_node *) malloc(sizeof(dlist_node));
   newnode->item = item;
   newnode->prev = NULL;
-  newnode->next = (*list)->head;
+  newnode->next = list->head;
 
-  if ((*list)->head == NULL){
-    (*list)->head = newnode;
-    (*list)->tail = newnode;
+  if (list->head == NULL){
+    list->head = newnode;
+    list->tail = newnode;
   }
   else {
-    (*list)->head->prev = newnode;
-    (*list)->head = newnode;
+    list->head->prev = newnode;
+    list->head = newnode;
   }
 }
 
@@ -89,7 +89,7 @@ int main(){
 
   /* Fill it with numers. */
   for (i = 0; i < 5; i++)
-    dlist_insert(&list, &entries[i]);
+    dlist_insert(list, &entries[i]);
   
   /* Print out the list contents. */
   printf("List after inserting [1, 4, -10, 2, 10]:\n");
@@ -99,21 +99,21 @@ int main(){
   printf("List after searching for and deleting 1:\n");
   i = 1;
   node = dlist_search(list, &i, (comp_fn) _comp_int);
-  dlist_delete(&list, node);
+  dlist_delete(list, node);
   dlist_traverse(list, (void (*)(void *)) _print_int);
   printf("\n");
 
   printf("List after searching for and deleting -10:\n");
   i = -10;
   node = dlist_search(list, &i, (comp_fn) _comp_int);
-  dlist_delete(&list, node);
+  dlist_delete(list, node);
   dlist_traverse(list, (void (*)(void *)) _print_int);
   printf("\n");
 
   printf("List after searching for and deleting 10:\n");
   i = 10;
   node = dlist_search(list, &i, (comp_fn) _comp_int);
-  dlist_delete(&list, node);
+  dlist_delete(list, node);
   dlist_traverse(list, (void (*)(void *)) _print_int);
   printf("\n");
 
