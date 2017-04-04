@@ -2,10 +2,7 @@
  *
  * Krzysztof Chalupka, 2017.
  */
-typedef int (*comp_fn)(void *, void *);
-
-int linear_search_arr(void **, void *, comp_fn, int);
-int binary_search_arr(void **, void *, comp_fn, int, int);
+#include "search.h"
 
 int linear_search_arr(void *arr[], void *findme, comp_fn comp, int n)
 {
