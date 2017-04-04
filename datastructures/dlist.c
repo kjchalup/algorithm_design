@@ -39,7 +39,43 @@ void dlist_delete(dlist *list, dlist_node *node){
   if(node)
     free(node);
 }
-  
+
+
+dlist_node *dlist_successor(dlist *list, dlist_node *node){
+  return node->next;
+}
+
+
+dlist_node *dlist_predecessor(dlist *list, dlist_node *node){
+  return node->prev;
+}
+
+
+void *dlist_minimum(dlist *list, comp_fn comp){
+  dlist_node *node = list->head;
+  if (node == NULL){
+    return NULL;
+  }
+  void *best_val = node->item;
+  while(node = node->next)
+    if(comp(best_val, node->item) > 0)
+      best_val = node->item;
+  return best_val;
+}
+
+
+void *dlist_maximum(dlist *list, comp_fn comp){
+  dlist_node *node = list->head;
+  if (node == NULL){
+    return NULL;
+  }
+  void *best_val = node->item;
+  while(node = node->next)
+    if(comp(best_val, node->item) < 0)
+      best_val = node->item;
+  return best_val;
+}
+
 
 void dlist_insert(dlist *list, void *item){
   /* Insert at the head of the list. */
@@ -91,10 +127,14 @@ int main(){
   for (i = 0; i < 5; i++)
     dlist_insert(list, &entries[i]);
   
-  /* Print out the list contents. */
   printf("List after inserting [1, 4, -10, 2, 10]:\n");
   dlist_traverse(list, (void (*)(void *)) _print_int);
   printf("\n");
+  
+  printf("Largest element: %d\n",
+	 * (int *) dlist_maximum(list, (comp_fn) _comp_int));
+  printf("Smallest element: %d\n",
+	 * (int *) dlist_minimum(list, (comp_fn) _comp_int));
 
   printf("List after searching for and deleting 1:\n");
   i = 1;
