@@ -36,6 +36,11 @@ double pathlen(gsl_vector **data, int *path, int n){
   return total;
 }
 
+int *tsp_nn(gsl_vector **data, int n)
+{
+  /* Solve the TSP using the nearest-neighbor heuristic. */
+  
+
 int *tsp_bs(gsl_vector **data, int n)
 {
   /* Find the shortest loop between `n` points. stored in `data`. */
