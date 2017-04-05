@@ -9,7 +9,7 @@
 #include <gsl/gsl_permutation.h>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
-#include "../misc/utils.h"
+#include "../utils/utils.h"
 
 int *tsp_bs(gsl_vector **, int); /* brute-force search */
 int *tsp_nn(gsl_vector **, int); /* nearest-neighbor */
@@ -23,27 +23,52 @@ double pathlen(gsl_vector **data, int *path, int n){
    * at the end.
    */
   int i;
-  gsl_vector *vdiff;
   double total = 0.;
-  for (i = 0; i < n-1; i++){
-    vdiff = vector_sub(*(data + path[i]), *(data + path[i+1]));
-    total += gsl_blas_dnrm2(vdiff);
-    free(vdiff);
-  }
-  vdiff = vector_sub(*(data + path[n-1]), *(data + path[0]));
-  total += gsl_blas_dnrm2(vdiff);
-  free(vdiff);
+  for (i = 0; i < n-1; i++)
+    total += vector_dist(data[path[i]], data[path[i+1]]);
+  if (n > 0)
+    total += vector_dist(data[path[n-1]], data[path[0]]);
   return total;
 }
 
 int *tsp_nn(gsl_vector **data, int n)
 {
   /* Solve the TSP using the nearest-neighbor heuristic. */
+  if (n == 0)
+    return NULL;
+  int i, j, best_id;
+  int usedup = 0; /* Flag already-used elements. */
+  gsl_vector *current = data[0];
+  double cur_dist;
+  double best_dist;
+  int *nn_path = (int *) calloc(n, sizeof(int));
   
+  nn_path[0] = 0;
+  usedup |= 1;
+  for (i = 1; i < n; i++){
+    best_dist = 0;
+    for (j = 1; j < n; j++){
+      if (!(usedup & (2 << (j-1)))){
+    	cur_dist = vector_dist(current, data[j]);
+    	if (cur_dist < best_dist || best_dist == 0){
+    	  best_dist = cur_dist;
+	  best_id = j;
+    	}
+      }
+    }
+    current = data[best_id];
+    nn_path[i] = best_id;
+    usedup |= (2 << (best_id-1));
+  }
+  
+  return nn_path;
+}
 
 int *tsp_bs(gsl_vector **data, int n)
 {
   /* Find the shortest loop between `n` points. stored in `data`. */
+  if (n == 0)
+    return NULL;
   double best_dist = 0;
   double cur_dist = 0;
   int i_perm, i_iter;
@@ -52,20 +77,19 @@ int *tsp_bs(gsl_vector **data, int n)
   
   gsl_permutation *perm = gsl_permutation_calloc(n);
   for (i_iter = 0; gsl_permutation_next(perm) != GSL_FAILURE; i_iter++){
-    printf("Iter %d, permutation [", i_iter);
     /* Retrieve the permutation into an array. */
     for (i_perm = 0; i_perm < n; i_perm++){
       cur_path[i_perm] = gsl_permutation_get(perm, i_perm);
-      printf("%d ", cur_path[i_perm]);
     }
-    printf("], ");
     
     /* Compute the path length corresponding to this permutation. */
+    printf("Iter %d, permutation ", i_iter);
+    print_intarray(cur_path, n);
     cur_dist = pathlen(data, cur_path, n);
-    printf("dist %.10f.\n", cur_dist);
+    printf(" dist %.10f.\n", cur_dist);
 
     /* Save best pathlen to-date. */
-    if (best_dist == 0 || best_dist > cur_dist){
+    if (best_dist > cur_dist || best_dist == 0){
       best_dist = cur_dist;
       for (i_perm = 0; i_perm < n; i_perm++)
 	best_path[i_perm] = cur_path[i_perm];
@@ -88,7 +112,18 @@ int main(){
   npoints = get_nlines(fname);
   vecs = load_vectors_from_file("tsp.dat", npoints);
 
-  /* Compute the best path using the brute-force heuristic. */
+  /* Compute the best path using the brute-force method. */
   bestpath = tsp_bs(vecs, npoints);
+  printf("Best path (brute-force) len = %f, for path ",
+	 pathlen(vecs, bestpath, npoints));
+  print_intarray(bestpath, npoints);
+  printf("\n");
+
+  /* Compute the best path using the nearest-neighbor heuristic. */
+  bestpath = tsp_nn(vecs, npoints);
+  printf("Best path (nearest-neighbor) len = %f, for path ",
+	 pathlen(vecs, bestpath, npoints));
+  print_intarray(bestpath, npoints);
+  printf("\n");
   return 0;
 }

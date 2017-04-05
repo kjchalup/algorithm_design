@@ -4,6 +4,7 @@
  */
 
 #include <stdio.h>
+#include <gsl/gsl_blas.h>
 #include "utils.h"
 
 int get_nlines(char *fname){
@@ -18,6 +19,14 @@ int get_nlines(char *fname){
   return nlines;
 }
 
+void print_intarray(int *arr, int n){
+  int i;
+  printf("[");
+  for(i = 0; i < n; i++)
+    printf("%d ", arr[i]);
+  printf("]");
+}
+
 void print_gsl_vector(gsl_vector *vec){
   int i;
   for (i = 0; i < vec->size; i++)
@@ -30,6 +39,15 @@ gsl_vector *vector_sub(gsl_vector *v1, gsl_vector *v2){
   gsl_vector_add(res, v1);
   gsl_vector_sub(res, v2);
   return res;
+}
+
+double vector_dist(gsl_vector *v1, gsl_vector *v2){
+  /* Compute the Euclidean distance between vectors. */
+  double dist;
+  gsl_vector *tmp =  vector_sub(v1, v2);
+  dist = gsl_blas_dnrm2(tmp);
+  free(tmp);
+  return dist;
 }
 
 gsl_vector **load_vectors_from_file(char *fname, int nvecs)
