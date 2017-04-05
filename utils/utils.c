@@ -7,6 +7,11 @@
 #include <gsl/gsl_blas.h>
 #include "utils.h"
 
+void crit_err(char *msg){
+  fprintf(stderr, "%s, exiting.\n", msg);
+  exit(1);
+}
+
 int get_nlines(char *fname){
   /* Check how many lines there are in a file. */
   int nlines = 0;

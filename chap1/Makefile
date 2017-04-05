@@ -3,7 +3,7 @@ CFLAGS = -Wall -g
 INCLUDES = -I/home/kchalupk/gsl/include
 LFLAGS = -L/home/kchalupk/gsl/lib
 LIBS = -lgsl -lgslcblas -lm
-SRCS = ex1_26.c ../utils/utils.c
+SRCS = ex1_26.c ../utils/utils.c ../utils/mathutils.c
 OBJS = $(SRCS:.c=.o)
 MAIN = a.out
 .PHONY: depend clean

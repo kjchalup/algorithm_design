@@ -95,6 +95,24 @@ void dlist_insert(dlist *list, void *item){
 }
 
 
+void dlist_insert_tail(dlist *list, void *item){
+  /* Insert at the tail of the list. */
+  dlist_node *newnode = (dlist_node *) malloc(sizeof(dlist_node));
+  newnode->item = item;
+  newnode->prev = list->tail;
+  newnode->next = NULL;
+
+  if (list->head == NULL){
+    list->head = newnode;
+    list->tail = newnode;
+  }
+  else {
+    list->tail->next = newnode;
+    list->tail = newnode;
+  }
+}
+
+
 void dlist_traverse(dlist *list, void (*fun)(void *)){
   /* Map a function onto a list. */
   dlist_node *node = list->head;
@@ -113,7 +131,7 @@ int _comp_int(int *x, int *y){
   return *x - *y;
 }
 
-int main(){
+int test_dlist(){
   int i;
   dlist_node *node;
   int entries[5] = {1, 4, -10, 2, 10};

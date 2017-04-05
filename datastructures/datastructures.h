@@ -15,6 +15,7 @@ typedef struct dlist {
 
 dlist_node *dlist_search(dlist *, void *, comp_fn);
 void dlist_insert(dlist *, void *);
+void dlist_insert_tail(dlist *, void *);
 void dlist_delete(dlist *, dlist_node *);
 dlist_node *dlist_successor(dlist *, dlist_node *);
 dlist_node *dlist_predecessor(dlist *, dlist_node *);
