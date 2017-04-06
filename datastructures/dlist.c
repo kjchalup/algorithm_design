@@ -9,6 +9,15 @@
 void _print_int(int *);
 int _comp_int(int *, int *);
 
+dlist *dlist_new(void *item){
+  dlist *list = (dlist *) malloc(sizeof(dlist));
+  list->head = NULL;
+  list->tail = NULL;
+  dlist_insert(list, item);
+  return list;
+}
+
+
 dlist_node *dlist_search(dlist *list, void *item, comp_fn comp){
   dlist_node *node = list->head;
   while(node){
@@ -57,7 +66,7 @@ void *dlist_minimum(dlist *list, comp_fn comp){
     return NULL;
   }
   void *best_val = node->item;
-  while(node = node->next)
+  while((node = node->next))
     if(comp(best_val, node->item) > 0)
       best_val = node->item;
   return best_val;
@@ -70,7 +79,7 @@ void *dlist_maximum(dlist *list, comp_fn comp){
     return NULL;
   }
   void *best_val = node->item;
-  while(node = node->next)
+  while((node = node->next))
     if(comp(best_val, node->item) < 0)
       best_val = node->item;
   return best_val;
