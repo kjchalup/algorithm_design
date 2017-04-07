@@ -1,19 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-/* int get_clen(int n, int clen){
-  if (n == 1){
-    return clen + 1;
-  }
-  else if (n % 2){
-    return get_clen(3 * n + 1, clen+1);
-  }
-  else {
-    return get_clen(n / 2, clen+1);
-  }
-  }*/
-
 int get_clen(int n){
   int counter = 1;
   while (n != 1){
@@ -29,8 +16,8 @@ int get_clen(int n){
 int main(){
   char *line = NULL;
   int a, b, x, best, cur, switched;
-
   size_t linelen;
+
   while (getline(&line, &linelen, stdin) > 1){
     sscanf(line, "%d %d", &a, &b);
     best = 0;
