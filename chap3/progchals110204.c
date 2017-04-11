@@ -70,17 +70,18 @@ char *decipher(char *cipher, char *line){
      Else, fetch a `word` from line, and try to update the current
          `cipher` using `dict` and `word`. */
   int len, i = 0;
+  int space = line[0] == ' ';
   char *newcipher;
+
   /* Get next word; if reached end, return successful cipher. */
-  if ((len = sscanf(line, "%s", word)) < 1 || len == -1){
+  if ((len = sscanf(line, " %s", word)) < 1 || len == -1){
     return cipher;
   }
-
+    
   /* If any dict word compatible with current cipher and word, branch. */
   while (dict[i] != NULL){
-    /* printf("--%s\n", dict[i]); */
     if ((newcipher = decode_word(word, dict[i], cipher)) != NULL &&
-	(newcipher = decipher(newcipher, line + wordlen(word) + 1)) != NULL)
+	(newcipher = decipher(newcipher, line + wordlen(word) + space)) != NULL)
       return newcipher;
     i++;
   }
@@ -88,15 +89,15 @@ char *decipher(char *cipher, char *line){
 }
 
 void read_cipher(char *cipher, char *line){
-  int i;
-  while (sscanf(line, "%s", word) > 0){
+  int i, line_id = 0;
+  while (sscanf(line + line_id, "%s", word) > 0){
     for (i = 0; i < wordlen(word); i++)
       if (cipher)
 	printf("%c", cipher[word[i] - 'a']);
       else
 	printf("*");
     printf(" ");
-    line += wordlen(word) + 1;
+    line_id += wordlen(word) + 1;
   }
 }
 
@@ -117,16 +118,14 @@ int main(void){
 
     /* Process line-by-line. */
     while((len = getline(&line, &dummy, stdin)) != -1){
+      if (line[len-1] == '\n') /* remove newline, except on last line */
+	line[len-1] = '\0';
       cipher = (char *) calloc(N_CHARS, sizeof(char));
       for (i = 0; i < N_CHARS; i++)
 	revcipher[i] = 0;
       cipher = decipher(cipher, line);
       read_cipher(cipher, line);
-      for (i = 0; i < dummy; i++)
-	line[i] = '\0';
-      /* free(line); */
       printf("\n");
-      fflush(stdout);
     }
   }
   return 0;
