@@ -3,7 +3,7 @@
 #include <string.h>
 #define DICT_LEN 1000
 #define WORD_LEN 16
-#define N_CHARS 24
+#define N_CHARS 30
 
 char *dict[DICT_LEN];
 char word[WORD_LEN+1];
@@ -15,6 +15,13 @@ int wordlen(char *word){
   while(word[i++] != '\0');
   return i - 1;
 }
+
+void print_cipher(char *cipher){
+  int i;
+  for (i = 0; i < N_CHARS; i++) printf(" |%c| ", cipher[i]);
+  printf("\n");
+}
+  
 
 char *decode_word(char *word, char *dict, char *newcipher){
   /* Check whether there is a word in `dict` that is compatible
@@ -29,7 +36,7 @@ char *decode_word(char *word, char *dict, char *newcipher){
   for (j = 0; j < N_CHARS; j++){
     tmpcipher[j] = newcipher[j];
     if (newcipher[j] != 0)
-      revcipher[newcipher[j] - 'a'] = j;
+      revcipher[newcipher[j] - 'a'] = 'a' + j;
   }
 
   for (j = 0; j < len; j++){
@@ -62,15 +69,16 @@ char *decipher(char *cipher, char *line){
   /* If `line` end is reached, return complete `cipher`.
      Else, fetch a `word` from line, and try to update the current
          `cipher` using `dict` and `word`. */
-  int i = 0;
+  int len, i = 0;
   char *newcipher;
   /* Get next word; if reached end, return successful cipher. */
-  if (sscanf(line, "%s", word) < 1) return cipher;
-  printf("%s\n", word);
+  if ((len = sscanf(line, "%s", word)) < 1 || len == -1){
+    return cipher;
+  }
 
   /* If any dict word compatible with current cipher and word, branch. */
   while (dict[i] != NULL){
-    printf("--%s\n", dict[i]);
+    /* printf("--%s\n", dict[i]); */
     if ((newcipher = decode_word(word, dict[i], cipher)) != NULL &&
 	(newcipher = decipher(newcipher, line + wordlen(word) + 1)) != NULL)
       return newcipher;
@@ -79,63 +87,45 @@ char *decipher(char *cipher, char *line){
   return NULL;
 }
 
-void test_word(){
+void read_cipher(char *cipher, char *line){
   int i;
-  char *newcipher = (char *) calloc(N_CHARS, sizeof(char));
-  char *res = (char *) calloc(N_CHARS, sizeof(char));
-  char word[] = "abba";
-  dict[0] = "dddd";
-  dict[1] = "bbbbbbb";
-  dict[2] = "baab";
-  dict[3] = "zyyz";
-  dict[4] = "bkcb";
-  dict[5] = "hijklmnabcd";
-  res = decode_word(word, dict[0], newcipher);
-  if (res != NULL)
-    printf("ERROR");
-  res = decode_word(word, dict[2], newcipher);
-  for (i = 0; i < N_CHARS; i++)
-    printf("%c\n", (char) res[i]);
-}
-
-void test_decipher(){
-  int i;
-  char *newcipher = (char *) calloc(N_CHARS, sizeof(char));
-  char word[] = "abba kkkk uuuu ssss\n";
-  dict[0] = "baab";
-  dict[1] = "yyyy";
-  newcipher = decipher(newcipher, word);
-  if (newcipher == NULL)
-    printf("No solutions");
-  else
-    for (i = 0; i < N_CHARS; i++)
-      printf("%c|", (char) newcipher[i]);
+  while (sscanf(line, "%s", word) > 0){
+    for (i = 0; i < wordlen(word); i++)
+      if (cipher)
+	printf("%c", cipher[word[i] - 'a']);
+      else
+	printf("*");
+    printf(" ");
+    line += wordlen(word) + 1;
+  }
 }
 
 int main(void){
-  test_decipher();
-  
-  /* int nwords, word_id, len; */
-  /* size_t dummy; */
-  /* char *line; */
+  int nwords, word_id, len, i;
+  size_t dummy;
+  char *line;
+  char *cipher;
 
-  /* while (scanf("%d", &nwords) > 0){ */
-  /*   getchar(); /\* remove newline *\/ */
+  while (scanf("%d", &nwords) > 0){
+    getchar(); /* remove newline */
 
-  /*   /\* Read the dictionary. *\/ */
-  /*   for (word_id = 0; word_id < nwords; word_id++){ */
-  /*     len = getline(&dict[word_id], &dummy, stdin); */
-  /*     dict[word_id][len-1] = '\0'; /\* remove newline *\/ */
-  /*   } */
+    /* Read the dictionary. */
+    for (word_id = 0; word_id < nwords; word_id++){
+      len = getline(&dict[word_id], &dummy, stdin);
+      dict[word_id][len-1] = '\0'; /* remove newline */
+    }
 
-  /*   /\* Process line-by-line. *\/ */
-  /*   while((len = getline(&line, &dummy, stdin)) != -1){ */
-  /*     while (sscanf(line, "%s", word) >= 1){ */
-  /* 	len = wordlen(word); */
-  /* 	printf("%s len %d\n", word, len); */
-  /* 	line += len + 1; */
-  /*     } */
-  /*   } */
-  /* } */
+    /* Process line-by-line. */
+    while((len = getline(&line, &dummy, stdin)) != -1){
+      cipher = (char *) calloc(N_CHARS, sizeof(char));
+      for (i = 0; i < N_CHARS; i++)
+	revcipher[i] = 0;
+      cipher = decipher(cipher, line);
+      read_cipher(cipher, line);
+      /* free(line); */
+      printf("\n");
+      fflush(stdout);
+    }
+  }
   return 0;
 }
