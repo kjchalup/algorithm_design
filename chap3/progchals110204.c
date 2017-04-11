@@ -122,6 +122,8 @@ int main(void){
 	revcipher[i] = 0;
       cipher = decipher(cipher, line);
       read_cipher(cipher, line);
+      for (i = 0; i < dummy; i++)
+	line[i] = '\0';
       /* free(line); */
       printf("\n");
       fflush(stdout);
