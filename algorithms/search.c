@@ -2,7 +2,7 @@
  *
  * Krzysztof Chalupka, 2017.
  */
-#include "search.h"
+#include "algorithms.h"
 
 int linear_search_arr(void *arr[], void *findme, comp_fn comp, int n)
 {

@@ -2,6 +2,10 @@
 
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
+
+/*====================================
+ * Doubly-linked list.
+ *====================================*/
 typedef struct dlist_node {
   void *item;
   struct dlist_node *prev;
