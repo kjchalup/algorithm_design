@@ -3,10 +3,11 @@
  * Krzysztof Chalupka, 2017.
  */
 #include <stdio.h>
-#include "search.c"
+#include "algorithms.h"
 
 float test_linear_search();
 float test_binary_search();
+float test_mergesort();
 int comp_int(int *, int *);
 int comp_char(char *, char *);
 
@@ -25,6 +26,13 @@ int main()
 
   return 0;
 }
+
+
+int comp_int(int *i, int *j){
+  /* Compare the integers pointed to. */
+  return *i - *j;
+}
+
 
 float test_linear_search()
 {
@@ -50,6 +58,7 @@ float test_linear_search()
   return success / 4.;
 }
 
+
 float test_binary_search()
 {
   int success = 0;
@@ -72,9 +81,4 @@ float test_binary_search()
   success += (binary_search_arr((void **) arr, &val,\
   				(comp_fn) &comp_int, 0, 4) == -1);
   return success / 4.;
-}
-
-int comp_int(int *i, int *j){
-  /* Compare the integers pointed to. */
-  return *i - *j;
 }

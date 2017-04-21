@@ -14,7 +14,7 @@
 
 int *tsp_bs(gsl_vector **, int); /* brute-force search */
 int *tsp_nn(gsl_vector **, int); /* nearest-neighbor */
-void tsp_cp(gsl_vector **, int); /* closest-pair */
+int *tsp_cp(gsl_vector **, int); /* closest-pair */
 double pathlen(gsl_vector **, int *, int); /* path length of a permutation. */
 
 double pathlen(gsl_vector **data, int *path, int n){
@@ -67,87 +67,126 @@ int *tsp_nn(gsl_vector **data, int n)
 }
 
 
-void tsp_cp(gsl_vector **data, int n)
+int *tsp_cp(gsl_vector **data, int n)
 {
   /* Solve the TSP using the closest pair heuristic. */
-  int i;
-  dlist *chains = (dlist *) malloc(sizeof(dlist));
-  dlist *newchain;
-  dlist_node *best1, *best2, *ch1, *ch2, *bestch1, *bestch2;
-  double best_dist, cur_dist;
-  gsl_vector *item;
-  gsl_vector **bestpath = (gsl_vector **) malloc(sizeof(data));
-  int *bestids = (int *) calloc(n, sizeof(int));
-  chains->head = NULL;
-  chains->tail = NULL;
-  
-  /* Assign each point to a separate chain. */
+  int i, j, ch1_id, ch2_id, best_ch1, best_ch2;
+  int match_flag;
+  double dist, best_dist;
+  dlist_node *node;
+  int *best_path = (int *) calloc(n, sizeof(int));
+
+  /* Create an array where each element corresponds to a chain. */
+  dlist **chains = (dlist **) calloc(n, sizeof(dlist *));
   for (i = 0; i < n; i++){
-    newchain = (dlist *) malloc(sizeof(dlist));
-    newchain->head = NULL;
-    newchain->tail = NULL;
-    dlist_insert(newchain, data[i]);
-    dlist_insert(chains, newchain);
+    chains[i] = dlist_new(data[i]);
   }
-  
-  /* Iteratively merge chains. */
+
+  /* Merge the chains according to the heuristic. */
   for (i = 0; i < n-1; i++){
-    best_dist = 0;
-    ch1 = chains->head;
-    do{
-      ch2 = chains->head;
-      do{
-	cur_dist = vector_dist(ch1->item->head->item, ch2->item->head->item);
-	if (cur_dist < best_dist){
-	  best_dist = cur_dist;
-	  best1 = ch1->item->head;
-	  bestch1 = ch1;
-	  best2 = ch2->item->head;
-	  bestch2 = ch2;
+    /* Find the smallest-distance chain ends pair. */
+    best_dist = 0.;
+    for (ch1_id = 0; ch1_id < n; ch1_id++){
+      if (chains[ch1_id] == NULL){
+	continue;
+      }
+      for (ch2_id = 0; ch2_id < n; ch2_id++){
+	if (chains[ch2_id] == NULL || ch1_id == ch2_id){
+	  continue;
 	}
-	cur_dist = vector_dist(ch1->item->head->item, ch2->item->tail->item);
-	if (cur_dist < best_dist){
-	  best_dist = cur_dist;
-	  best1 = ch1->item->head;
-	  bestch1 = ch1;
-	  best2 = ch2->item->tail;
-	  bestch2 = ch2;
+	dist = vector_dist(chains[ch1_id]->head->item,
+			   chains[ch2_id]->head->item);
+	if (dist < best_dist || best_dist == 0){
+	  /* Heads match. */
+	  best_dist = dist;
+	  best_ch1 = ch1_id;
+	  best_ch2 = ch2_id;
+	  match_flag = 0;
 	}
-	cur_dist = vector_dist(ch1->item->tail->item, ch2->item->head->item);
-	if (cur_dist < best_dist){
-	  best_dist = cur_dist;
-	  best1 = ch1->item->tail;
-	  bestch1 = ch1;
-	  best2 = ch2->item->head;
-	  bestch2 = ch2;
+
+	dist = vector_dist(chains[ch1_id]->head->item,
+			   chains[ch2_id]->tail->item);
+	if (dist < best_dist || best_dist == 0){
+	  /* Head1 matches tail2. */
+	  best_dist = dist;
+	  best_ch1 = ch1_id;
+	  best_ch2 = ch2_id;
+	  match_flag = 1;
 	}
-	cur_dist = vector_dist(ch1->item->tail->item, ch2->item->tail->item);
-	if (cur_dist < best_dist){
-	  best_dist = cur_dist;
-	  best1 = ch1->item->tail;
-	  bestch1 = ch1;
-	  best2 = ch2->item->tail;
-	  bestch2 = ch2;
+	  
+	dist = vector_dist(chains[ch1_id]->tail->item,
+			   chains[ch2_id]->head->item);
+	if (dist < best_dist || best_dist == 0){
+	  /* Tail1 matches head2. */
+	  best_dist = dist;
+	  best_ch1 = ch1_id;
+	  best_ch2 = ch2_id;
+	  match_flag = 2;
 	}
-      } while(ch2 = dlist_successor(ch2));
-    } while(ch1 = dlist_successor(ch1));
-    /* Now best1 and best2 are the chain edges to be connected. */
-    item = best2->item;
-    dlist_delete(bestch2, best2);
-    if (best1->next == NULL){
-      /* best1 is a tail. */
-      dlist_insert_tail(bestch1, item);
+	  
+	dist = vector_dist(chains[ch1_id]->tail->item,
+			   chains[ch2_id]->head->item);
+	if (dist < best_dist || best_dist == 0){
+	  /* Tail1 matches tail2. */
+	  best_dist = dist;
+	  best_ch1 = ch1_id;
+	  best_ch2 = ch2_id;
+	  match_flag = 3;
+	}
+      }
     }
-    else{
-      dlist_insert(bestch1, item);
+    printf("Iter %d, best match (%d, %d) %f\n",
+	   i, best_ch1, best_ch2, best_dist);
+
+    /* Merge the smallest-distance chain ends. */
+    if (match_flag == 0){
+      /* Heads match: push ch2 to the front of ch1 in reverse-order. */
+      while(chains[best_ch2]->head){
+	dlist_insert(chains[best_ch1], 
+		     chains[best_ch2]->head->item);
+	dlist_delete(chains[best_ch2], chains[best_ch2]->head);
+      }
     }
+    else if (match_flag == 1){
+      /* Head1 to tail2 match: push ch2 to the front of ch1 in-order. */
+      while(chains[best_ch2]->tail){
+	dlist_insert(chains[best_ch1], 
+		     chains[best_ch2]->tail->item);
+	dlist_delete(chains[best_ch2], chains[best_ch2]->tail);
+      }
+    }
+    else if (match_flag == 2){
+      /* Head2 to tail1 match: push ch2 to the end of ch1 in-order. */
+      while(chains[best_ch2]->head){
+	dlist_insert_tail(chains[best_ch1], 
+			  chains[best_ch2]->head->item);
+	dlist_delete(chains[best_ch2], chains[best_ch2]->head);
+      }
+    }
+    else if (match_flag == 3){
+      /* Tails match: push ch2 to the end of ch1 in reverse-order. */
+      while(chains[best_ch2]->tail){
+	dlist_insert_tail(chains[best_ch1], 
+			  chains[best_ch2]->tail->item);
+	dlist_delete(chains[best_ch2], chains[best_ch2]->tail);
+      }
+    }
+    chains[best_ch2] = NULL;
   }
-  
-  for (i = 0; i < n; i++){
-    bestids[i] = i;
-    best_path[i] = data[i];
-  }
-  printf("Best path length = %f.", pathlen(best_path, bestids, n));
+
+  /* All the chains except for one should be null. The non-null
+     chain contains the best (heuristic) path. */
+  for (i = 0; i < n; i++)
+    if (chains[i])
+      node = chains[i]->head;
+
+  for(i = 0; node; i++){
+    for (j = 0; j < n; j++)
+      if (data[j] == node->item)
+	best_path[i] = j;
+    node = node->next;
+  } 
+  return best_path;
 }
        
 
@@ -214,6 +253,11 @@ int main(){
   printf("\n");
 
   /* Compute the best path using the closest-pairs heuristic. */
-  tsp_nn(vecs, npoints);
+  bestpath = tsp_cp(vecs, npoints);
+  printf("Best path (closest-pair) len = %f, for path ",
+	 pathlen(vecs, bestpath, npoints));
+  print_intarray(bestpath, npoints);
+  printf("\n");
+
   return 0;
 }

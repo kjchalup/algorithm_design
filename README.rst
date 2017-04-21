@@ -4,19 +4,17 @@
 
 *Algorithmic Exercises and Adventures in C*
 
-In my recent `research`_ I have so far used exclusively Python, `Tensorflow`_ and `scikit-learn`_. But that's not enough to be a good software engineer, which you need to be to either set up your own tech company or get a job at a great one.
+I'm going through Steven S. Skiena's `The Algorithm Design Manual`_. I needed to learn C from scratch to do this (I only know Python well, and JavaScript to a smaller degree). This repository contains code that implements exercises from Skiena's books (each chapter in a separate directory). It also contains various algorithms and datastructures I wrote for training. 
 
-So, I'm going through Steven S. Skiena's `The Algorithm Design Manual`_. I needed to learn C properly to do this. This repository contains code that implements exercises from Skiena's books (each chapter in a separate directory), as well as various bits and pieces of code I developed for training, in the `misc`_ directory. 
-
-Note that all I know about C comes from `The C Programming Language` (2nd edition), which is about the now-obsolete C89 standard. The advantage of the book is that I could read through it and have a working knowledge of the language in 3 days. The disadvantage is that I have no idea what happened in C99 and C11.
+I learned C from `The C Programming Language` (2nd edition), which is about the now-obsolete C89 standard. The advantage of the book is that I could read through it and have a working knowledge of the language in 3 days. The disadvantage is that I have no idea what happened in C99 and C11. It turns out that Ubuntu's default C compiler works in C89 by default in any case.
 
 Requirements
 ------------
-The whole repository is written in C89 (yeah) code, so should run anywhere. Tested on Ubuntu 14.04 with the standard C library.
+The whole repository is written in C89, so should run anywhere. Tested on Ubuntu 14.04 with the default C library.
 
 Tests
 -----
-There seems to be no standard C testing framework, so I wrote my own tests. Each repository contains a test_*.c file. If you compile and run it, it'll display percentage of tests that passed/failed in each category.
+There seems to be no standard C testing framework, so I wrote my own tests. Each datastructure and algorithm corresponds to a test_*.c file. If you compile and run it, it'll display percentage of tests that passed/failed in each category.
 
 .. _MIT license: https://opensource.org/licenses/MIT
 .. _research: https://www.vision.caltech.edu/~kchalupk/
