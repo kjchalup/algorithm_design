@@ -4,7 +4,7 @@
 
 *Programming Adventures in C and C++*
 
-This repository contains my C code for exercises in Steven S. Skiena's `The Algorithm Design Manual`_, as well as C++ code for Accelerated C++.
+This repository contains my C code for exercises in Steven S. Skiena's `The Algorithm Design Manual`_, as well as C++ code for programs from Accelerated C++ by Andrew Koenig and Barbara E. Moo.
 
 I learned C from `The C Programming Language` (2nd edition), which is about the now-obsolete C89 standard. The advantage of the book is that I could read through it and have a working knowledge of the language in 3 days. The disadvantage is that I have no idea what happened in C99 and C11. It turns out that Ubuntu's default C compiler works in C89 by default in any case.
 
