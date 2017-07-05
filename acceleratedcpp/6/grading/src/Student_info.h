@@ -11,6 +11,8 @@ struct Student_info {
     std::vector<double> homework;
 };
 
+typedef std::vector<Student_info> data;
+
 bool compare(const Student_info&, const Student_info&);
 std::istream& read(std::istream&, Student_info&);
 std::istream& read_hw(std::istream&, std::vector<double>&);

@@ -6,7 +6,6 @@
 #include <string>
 #include "fail.h"
 #include "grade.h"
-#include "itertype.h"
 #include "Student_info.h"
 
 using std::cin;             using std::setprecision;
@@ -33,11 +32,7 @@ int main()
     failed_students = extract_fails(students);
 
     // Sort alphabetically.
-    #if DATAISLIST == 1
-        students.sort(compare);
-    #else
-        sort(students.begin(), students.end(), compare);
-    #endif
+    sort(students.begin(), students.end(), compare);
 
     // Print out grades.
     for (data::const_iterator it = students.begin();
@@ -45,7 +40,7 @@ int main()
         cout << it->name << string(maxlen + 1 - it->name.size(), ' ');
 
         try {
-            double final_grade = grade(*it);
+            double final_grade = median_grade(*it);
             streamsize prec = cout.precision();
             cout << setprecision(3) << final_grade << setprecision(prec);
         } catch (domain_error e) {
