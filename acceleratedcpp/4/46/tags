@@ -1,0 +1,15 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+GUARD_Student_info	Student_info.h	2;"	d
+GUARD_grade	grade.h	2;"	d
+GUARD_median	median.h	2;"	d
+Student_info	Student_info.h	/^struct Student_info {$/;"	s
+final	Student_info.h	/^    double midterm, final;$/;"	m	struct:Student_info
+homework	Student_info.h	/^    std::vector<double> homework;$/;"	m	struct:Student_info
+main	main.cpp	/^int main()$/;"	f
+midterm	Student_info.h	/^    double midterm, final;$/;"	m	struct:Student_info
+name	Student_info.h	/^    std::string name;$/;"	m	struct:Student_info

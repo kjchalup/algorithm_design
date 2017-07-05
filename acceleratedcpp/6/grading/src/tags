@@ -1,0 +1,31 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DATAISLIST	itertype.h	6;"	d
+GUARD_ANALYSIS	analysis.h	2;"	d
+GUARD_FAIL	fail.h	2;"	d
+GUARD_ITERTYPE	itertype.h	2;"	d
+GUARD_Student_info	Student_info.h	2;"	d
+GUARD_grade	grade.h	2;"	d
+GUARD_median	median.h	2;"	d
+Student_info	Student_info.h	/^struct Student_info {$/;"	s
+compare	Student_info.cpp	/^bool compare(const Student_info& stud1, const Student_info& stud2)$/;"	f
+data	itertype.h	/^    typedef std::list<Student_info> data;$/;"	t
+data	itertype.h	/^    typedef std::vector<Student_info> data;$/;"	t
+did_all_hw	analysis.cpp	/^bool did_all_hw(const Student_info& stud)$/;"	f
+extract_fails	fail.cpp	/^data extract_fails(data& students)$/;"	f
+fgrade	fail.cpp	/^bool fgrade(const Student_info& s){$/;"	f
+final	Student_info.h	/^    double midterm, final;$/;"	m	struct:Student_info
+grade	grade.cpp	/^double grade(const Student_info& stud)$/;"	f
+grade	grade.cpp	/^double grade(double mid, double fin, double hw)$/;"	f
+grade	grade.cpp	/^double grade(double mid, double fin, std::vector<double> hw){$/;"	f
+homework	Student_info.h	/^    std::vector<double> homework;$/;"	m	struct:Student_info
+main	main.cpp	/^int main()$/;"	f
+median	median.cpp	/^double median(std::vector<double> vec)$/;"	f
+midterm	Student_info.h	/^    double midterm, final;$/;"	m	struct:Student_info
+name	Student_info.h	/^    std::string name;$/;"	m	struct:Student_info
+read	Student_info.cpp	/^istream& read(istream& is, Student_info& stud)$/;"	f
+read_hw	Student_info.cpp	/^istream& read_hw(istream& in, vector<double>& hw)$/;"	f
