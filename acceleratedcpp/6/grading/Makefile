@@ -1,4 +1,4 @@
-OBJS = build/Student_info.o build/grade.o build/fail.o
+OBJS = build/Student_info.o build/grade.o build/fail.o build/utils.o
 CC = g++
 DEBUG = -g
 CFLAGS = -Wall -c 
@@ -23,8 +23,11 @@ build/main_compareschemes.o : src/main_compareschemes.cpp src/grade.h\
 build/Student_info.o : src/Student_info.cpp src/Student_info.h
 	$(CC) $(CFLAGS) src/Student_info.cpp -o build/Student_info.o
 
-build/fail.o : src/fail.cpp src/fail.h src/grade.h
+build/fail.o : src/fail.cpp src/fail.h src/grade.h src/utils.h
 	$(CC) $(CFLAGS) src/fail.cpp -o build/fail.o
+
+build/utils.o : src/utils.cpp src/utils.h
+	$(CC) $(CFLAGS) src/utils.cpp -o build/utils.o
 
 build/grade.o : src/grade.cpp src/grade.h
 	$(CC) $(CFLAGS) src/grade.cpp -o build/grade.o

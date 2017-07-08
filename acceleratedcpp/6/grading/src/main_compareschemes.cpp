@@ -17,10 +17,12 @@ using std::string;
 
 
 void write_analysis(ostream& out, const string& name,
-    double analysis(const data&), const data& did, const data& didnt)
+    double grade_f(const Student_info&),
+    const data& did,
+    const data& didnt)
 {
-    out << name << ": median(did) = " << analysis(did) <<
-        ", median(didnt) = " << analysis(didnt) << endl;
+    out << name << ": median(did) = " << analysis(did, grade_f) <<
+        ", median(didnt) = " << analysis(didnt, grade_f) << endl;
 }
 
 
@@ -49,8 +51,7 @@ int main()
     }
 
     // Do the analysis.
-    write_analysis(cout, "median", median_analysis, did, didnt);
-    write_analysis(cout, "average", average_analysis, did, didnt);
-    //write_analysis(cout, "optimistic median",
-    //    optimistic_median_analysis, did, didnt);
+    write_analysis(cout, "median", median_grade, did, didnt);
+    write_analysis(cout, "optimedian", optimedian_grade, did, didnt);
+    write_analysis(cout, "average", average_grade, did, didnt);
 }

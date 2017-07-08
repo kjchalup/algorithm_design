@@ -18,7 +18,7 @@ double grade(double mid, double fin, double hw)
 double average(const vector<double>& v)
 {
     if (v.size() == 0) 
-        throw std::domain_error("median of an empty vector");
+        throw std::domain_error("average of an empty vector");
     return std::accumulate(v.begin(), v.end(), 0.0) / v.size();
 }
 
@@ -43,29 +43,28 @@ double median(std::vector<double> vec)
 }
 
 
-double average_analysis(const data& students)
+double median_grade(const Student_info& s)
 {
-    vector<double> grades;
-
-    // Compute average grade of each student.
-    std::transform(students.begin(), students.end(),
-        std::back_inserter(grades), average_grade);
-    return median(grades);
-}
-
-
-double median_grade(const Student_info& s) {
     return grade(s.midterm, s.final, median(s.homework));
 }
 
 
-double median_analysis(const data& students)
+double optimedian_grade(const Student_info& s)
+{
+    // Extract the non-zero elements.
+    vector<double> nonzero;
+    remove_copy(s.homework.begin(), s.homework.end(),
+        back_inserter(nonzero), 0);
+    return grade(s.midterm, s.final, median(nonzero));
+}
+
+
+// Compute the median of the grades of the students.
+double analysis(const data& students, double grade_f(const Student_info&))
 {
     vector<double> grades;
-
-    // Compute average grade of each student.
     std::transform(students.begin(), students.end(),
-        std::back_inserter(grades), median_grade);
+        std::back_inserter(grades), grade_f);
     return median(grades);
 }
 
