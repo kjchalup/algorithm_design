@@ -1,5 +1,6 @@
-// Index cin strings by line number occurrence.
+// Index cin words by line number.
 // Output sorted by number of occurrences.
+// Remove duplicate line occurences.
 #include <algorithm>
 #include <iostream>
 #include <locale>

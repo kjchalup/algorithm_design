@@ -1,3 +1,4 @@
+// Output grades of all students, separating failed students out.
 #include <algorithm>
 #include <iomanip>
 #include <ios>

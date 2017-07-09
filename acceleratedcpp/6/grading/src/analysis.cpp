@@ -1,3 +1,4 @@
+// Functions to analyze student's performance.
 #include <algorithm>
 #include "analysis.h"
 

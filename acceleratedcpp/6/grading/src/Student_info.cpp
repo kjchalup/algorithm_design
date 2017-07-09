@@ -1,3 +1,4 @@
+// Student data structure.
 #include "Student_info.h"
 #include <iostream>
 #include <vector>

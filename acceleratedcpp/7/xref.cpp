@@ -1,4 +1,4 @@
-// Index cin strings by line number occurrence.
+// Index std::cin words by line number.
 #include <algorithm>
 #include <iostream>
 #include <locale>
@@ -16,10 +16,12 @@ using std::vector;
 
 typedef map<string, vector<int> > sindex;
 
+// Split a line by whitespace occurrence.
 vector<string> splitspace(const string& s)
 {
     vector<string> res;
-    return boost::split(res, s, boost::is_any_of(" "));
+    return boost::split(res, s, boost::is_any_of("\t\n "),
+        boost::token_compress_on);
 }
 
 sindex xref(istream& in,
@@ -52,7 +54,3 @@ int main()
         cout << std::endl;
     }
 }
-
-
-
-

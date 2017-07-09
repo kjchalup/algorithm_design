@@ -1,3 +1,4 @@
+// Extract all urls from the input stream.
 #include <iostream>
 #include <string>
 #include <vector>
@@ -8,6 +9,7 @@ using std::string;
 using std::vector;
 
 typedef string::const_iterator citer;
+
 
 bool not_url_char(char c)
 {

@@ -1,5 +1,6 @@
-// Index cin strings by line number occurrence.
+// Index cin urls by line number.
 // Output sorted by number of occurrences.
+// Remove duplicate line numbers.
 #include <algorithm>
 #include <cctype>
 #include <iostream>

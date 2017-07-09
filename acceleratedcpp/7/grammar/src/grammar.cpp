@@ -11,6 +11,7 @@ using std::string;
 using std::vector;
 
 
+// Split a line on whitespace.
 vector<string> splitline(const string& line) {
     vector<string> ret;
     boost::split(ret, line, boost::is_any_of(" \t"),
@@ -19,6 +20,7 @@ vector<string> splitline(const string& line) {
 }
 
 
+// Read grammar from an input stream to a Grammar map.
 Grammar read_grammar(std::istream& in) {
     Grammar ret;
     string line;
@@ -33,6 +35,7 @@ Grammar read_grammar(std::istream& in) {
 }
 
 
+// Check whether a word is surrounded by angular brackets.
 bool bracketed(const string& s) {
     if (s.size() > 1 && s[0] == '<' && s[s.size() - 1] == '>')
         return true;
@@ -41,6 +44,7 @@ bool bracketed(const string& s) {
 }
 
 
+// Generate a random integer in a given range.
 int randint(int min, int max) {
     std::random_device rd;
     std::mt19937 rng(rd());
@@ -49,6 +53,7 @@ int randint(int min, int max) {
 }
 
 
+// Auxiliary recursive function for generate_sentence.
 void generate_aux(const Grammar& g, const string& word, vector<string>& ss) {
     if (!bracketed(word)) {
         ss.push_back(word);
@@ -64,7 +69,8 @@ void generate_aux(const Grammar& g, const string& word, vector<string>& ss) {
         
 }
 
-        
+
+// Generate a sentence (array of strings) given a grammar.
 vector<string> generate_sentence(const Grammar& g) {
     vector<string> ret;
     generate_aux(g, "<sentence>", ret);

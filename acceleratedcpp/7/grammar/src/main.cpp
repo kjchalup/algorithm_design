@@ -1,3 +1,4 @@
+// Generate random sentences according to a grammar.
 #include <iostream>
 #include <string>
 #include <vector>
