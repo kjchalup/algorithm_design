@@ -1,12 +1,16 @@
-// Grammar-based sentence generation using recursion.
+// Grammar-based sentence generation using a stack.
 #include <iostream>
+#include <list>
 #include <random>
+#include <stack>
 #include <stdexcept>
 #include <boost/algorithm/string.hpp>
 #include "grammar.h"
 
 using std::getline;
+using std::list;
 using std::logic_error;
+using std::stack;
 using std::string;
 using std::vector;
 
@@ -49,24 +53,21 @@ int randint(int min, int max) {
 }
 
 
-void generate_aux(const Grammar& g, const string& word, vector<string>& ss) {
-    if (!bracketed(word)) {
-        ss.push_back(word);
-        return;
-    } else {
-        Grammar::const_iterator it = g.find(word);
-        if (it == g.end())
-            throw logic_error("empty rule");
-        const Rule& r = it->second[randint(0, it->second.size()-1)];
-        for (Rule::const_iterator i = r.begin(); i != r.end(); ++i)
-            generate_aux(g, *i, ss);
+list<string> generate_sentence(Grammar& g) {
+    list<string> ret;
+    stack<string> rulestack({"<sentence>"});
+    while (!rulestack.empty()) {
+        const string current = rulestack.top();
+        rulestack.pop();
+        if (!bracketed(current))
+            ret.push_back(current);
+        else {
+            // Pick a ruleset.
+            Rule r =  g[current][randint(0, g[current].size() - 1)];
+            for (Rule::const_reverse_iterator it = r.rbegin();
+                it != r.rend(); ++it)
+                rulestack.push(*it);
+        }
     }
-        
-}
-
-        
-vector<string> generate_sentence(const Grammar& g) {
-    vector<string> ret;
-    generate_aux(g, "<sentence>", ret);
     return ret;
 }
