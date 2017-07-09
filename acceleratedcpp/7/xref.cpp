@@ -1,3 +1,4 @@
+// Index cin strings by line number occurrence.
 #include <algorithm>
 #include <iostream>
 #include <locale>
