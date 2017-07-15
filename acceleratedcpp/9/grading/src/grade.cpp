@@ -14,6 +14,7 @@ double grade(double mid, double fin, double hw)
 }
 
 
+// Compute the average grade.
 double average(const vector<double>& v)
 {
     if (v.size() == 0) 
@@ -22,6 +23,7 @@ double average(const vector<double>& v)
 }
 
 
+// Compute the median grade. Note: this changes the input vector.
 double median(std::vector<double> vec)
 {
     if (vec.size() == 0) 

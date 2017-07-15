@@ -10,9 +10,11 @@ using std::string;
 using std::vector;
 
 
+// Set exam grades to 0 and hw grades to empty vector.
 Student_info::Student_info(): midterm(0), final(0) { };
 
 
+// Initiate by reading grades from input stream (see Student_info::read).
 Student_info::Student_info(istream& in) { read(in); };
 
 
