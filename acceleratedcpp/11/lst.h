@@ -6,57 +6,87 @@
 #include <cstddef>
 #include <memory>
 
-template <class T> class Lst_node {
-    public:
-        // Default constructor: all pointers are NULL.
-        Lst_node(): val(0), next(0), prev(0) {};
-
-        // Comparison and dereference use this->val.
-        T* operator*() { return val; };
-        Lst_node* operator++() {
-            return next;
-        }
-        Lst_node* operator--() {
-            return prev;
-        }
-        T* val;
-        Lst_node* next;
-        Lst_node* prev;
+// List node.
+template <class T>
+class node {
+public:
+    node(): val(0), next(0), prev(0) {};
+    node(T& v): next(0), prev(0), val(&v) {};
+    T* val;
+    node* next;
+    node* prev;
 };
 
-
-template <class T> class Lst {
+// Iterator over list nodes.
+template <class T>
+class nodeiter {
 public:
-    typedef T* iterator;
-    typedef const T* const_iterator;
-    typedef size_t size_type;
-    typedef T value_type;
-    typedef T& reference;
-    typedef const T& const_reference;
+    nodeiter(): current(0) {};
+    nodeiter(node<T>& n) { current = &n; };
 
-    // Default constructor.
-    Lst() { head = tail = Lst_node<T>(); }
-    // Copy constructor.
-    Lst(const Lst& l) { }
-    // Assignment constructor.
-    Lst& operator=(const Lst&);
-    // Destructor.
-    ~Lst() { uncreate(); }
+    nodeiter& operator++() { current = current->next; return *this; };
+    nodeiter& operator--() { current = current->prev; return *this; };
+    nodeiter operator++(int) { current = current->next; return *this; };
+    nodeiter operator--(int) { current = current->prev; return *this; };
 
-    iterator erase(iterator position);
-    iterator erase(iterator first, iterator last);
-    iterator insert(T*, iterator position);
-    iterator clear();
+    T& operator*() { return *(current->val); };
+    T* operator->() { return current->val; };
 
-    size_type size() const {return tail - head; }
+    node<T>* current;
+};
 
-    iterator begin() { return head; }
-    const iterator end() const { return tail; }
+template <class T>
+bool operator==(const nodeiter<T> &n1, const nodeiter<T> &n2) {
+    return n1.current == n2.current;
+}
+
+template <class T>
+bool operator!=(const nodeiter<T> &n1, const nodeiter<T> &n2) {
+    return !(n1.current == n2.current);
+}
+////===================================================================
+//// Define a list class.
+////===================================================================
+template <class T>
+class Lst {
+public:
+    typedef nodeiter<T> iterator;
+    node<T>* head;
+    node<T>* tail;
+    iterator begin() { return iterator(*head); };
+    iterator end() { return iterator(*tail); };
+
+    Lst(): head(0), tail(0) {};
+    Lst(T& val) { create(val); };
+
+    void prepend(T& val) {
+        if (head == 0) {
+            create(val);
+        } else {
+            node<T>* newnode = new node<T>(val);
+            newnode->next = head;
+            head->prev = newnode;
+            head = newnode;
+        }
+    }
+
+    void append(T& val) { 
+        if (head == 0) {
+            create(val);
+        } else {
+            node<T>* newnode = new node<T>(val);
+            tail->prev->next = newnode;
+            newnode->next = tail;
+            tail->prev = newnode;
+        }
+    }
 
 private:
-    Lst_node<T> head;
-    Lst_node<T> tail;
-
-    std::allocator<Lst_node<T>> alloc;
+    void create(T& val) {
+        head = new node<T>(val);
+        tail = new node<T>;
+        head->next = tail;
+        tail->prev = head;
+    }
 };
 #endif
